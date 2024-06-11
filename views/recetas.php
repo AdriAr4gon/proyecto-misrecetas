@@ -44,9 +44,16 @@
             <!-- Botones de exportación -->
             <a class="btn btn-success" href="exportarexcel.php?id=<?php echo $id; ?>" role="button">Exportar a Excel</a>
             <a class="btn btn-warning" href="exportarpdf.php?id=<?php echo $id; ?>" role="button">Exportar a PDF</a>
-            <a href="mailto:?subject=<?php echo rawurlencode('Mira esta receta que he encontrado en www.misrecetas.com'); ?>&body=<?php echo rawurlencode("Hola, mira esta receta que he encontrado en www.misrecetas.com\n\nNombre de la receta: " . $receta['nombre'] . "\nDificultad: " . $receta['dificultad'] . "\nExplicación: " . str_replace('<br />', "\n", nl2br($receta['explicacion'])) . "\n\nHaz click aquí para entrar en nuestra página y registrarte. Podrás ver esta y muchas recetas más: http://localhost/recetas.php?id=" . $id); ?>" class="btn btn-primary">Compartir</a>
+            <button id="compartir" class="btn btn-primary">Compartir</button>
         </div>
     </div>
+    <script>
+        document.getElementById('compartir').addEventListener('click', function() {
+            var subject = '<?php echo rawurlencode('Mira esta receta que he encontrado en www.misrecetas.com'); ?>';
+            var body = '<?php echo rawurlencode("Hola, mira esta receta que he encontrado en www.misrecetas.com\n\nNombre de la receta: " . $receta['nombre'] . "\nDificultad: " . $receta['dificultad'] . "\nExplicación: " . str_replace('<br />', "\n", nl2br($receta['explicacion'])) . "\n\nHaz click aquí para entrar en nuestra página y registrarte. Podrás ver esta y muchas recetas más: http://localhost/recetas.php?id=" . $id); ?>';
+            window.open('mailto:?subject=' + subject + '&body=' + body);
+        });
+    </script>
 
     <?php include '../inc/footer.php'; ?>
     </body>

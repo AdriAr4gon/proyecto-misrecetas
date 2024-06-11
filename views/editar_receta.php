@@ -120,8 +120,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <input type="date" name="fecha_creacion" id="fecha_creacion" class="form-control" value="<?php echo $fecha_creacion; ?>" required>
                         </div>
                         <div class="form-group">
-                            <label for="imagen">Imagen</label>
-                            <label for="imagen" id="dropzone" class="dropzone">Haz click aquí para seleccionar la imagen</label>
+                            <label>Imagen</label>
+                            <label for="imagen" class="dropzone">Haz click aquí para seleccionar la imagen</label>
                             <input type="file" name="imagen" id="imagen" class="form-control-file" style="display: none;">
                             <?php if ($imagen && file_exists($_SERVER['DOCUMENT_ROOT'] . "/uploads/" . $imagen)) : ?>
                                 <img src="/uploads/<?php echo $imagen; ?>" alt="Imagen de la receta" style="width: 100%; height: auto;">
