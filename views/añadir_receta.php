@@ -1,6 +1,10 @@
 <?php
 include '../inc/header.php';
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $id = $_GET['id'] ?? null;
 $tipo = '';
 $nombre = '';
@@ -9,51 +13,38 @@ $explicacion = '';
 $dificultad = '';
 $imagen = '';
 $recipeAdded = false;
+$error = '';
 
-// Asegurarse de que la conexión a la base de datos esté establecida
-if ($conn) {
-    if ($id) {
-        $stmt = $conn->prepare('SELECT * FROM recetas WHERE id = ?');
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $receta = $result->fetch_assoc();
+// Asegúrate de que la conexión a la base de datos esté establecida
+if (!$conn) {
+    die("Error en la conexión a la base de datos");
+}
 
-        $tipo = $receta['tipo'];
-        $nombre = $receta['nombre'];
-        $fecha_creacion = $receta['fecha_creacion'];
-        $explicacion = $receta['explicacion'];
-        $dificultad = $receta['dificultad'];
-        $imagen = $receta['imagen'];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $tipo = $_POST["tipo"];
+    $nombre = $_POST["nombre"];
+    $fecha_creacion = $_POST["fecha_creacion"];
+    $explicacion = $_POST["explicacion"];
+    $dificultad = $_POST['dificultad'] ?? 'No se ha especificado la dificultad';
+
+    $target_dir = "../uploads/";
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
     }
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $tipo = $_POST["tipo"];
-        $nombre = $_POST["nombre"];
-        $fecha_creacion = $_POST["fecha_creacion"];
-        $explicacion = $_POST["explicacion"];
-
-        if (empty($_POST['dificultad'])) {
-            $dificultad = 'No se ha especificado la dificultad';
+    if (empty($_FILES['imagen']['name'])) {
+        $imagen = 'img/imagen_predeterminada.svg';
+    } else {
+        $imagen = basename($_FILES["imagen"]["name"]);
+        $target_file = $target_dir . $imagen;
+        if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
+            // No es necesario mostrar ningún mensaje aquí
         } else {
-            $dificultad = $_POST['dificultad'];
+            $error = "Lo siento, hubo un error subiendo tu archivo. Error: " . $_FILES["imagen"]["error"];
         }
+    }
 
-
-        $target_dir = "../uploads/";
-        if (empty($_FILES['imagen']['name'])) {
-            $imagen = 'img/imagen_predeterminada.svg';
-        } else {
-            $imagen = basename($_FILES["imagen"]["name"]);
-            $target_file = $target_dir . $imagen;
-            if (move_uploaded_file($_FILES["imagen"]["tmp_name"], $target_file)) {
-                echo "El archivo " . $imagen . " ha sido subido.";
-            } else {
-                echo "Lo siento, hubo un error subiendo tu archivo.";
-                echo "Error: " . $_FILES["imagen"]["error"];
-            }
-        }
-
+    if (empty($error)) {
         if ($id) {
             $sql = "UPDATE recetas SET tipo = ?, nombre = ?, fecha_creacion = ?, imagen = ?, dificultad = ?, explicacion = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);
@@ -66,16 +57,14 @@ if ($conn) {
 
         if ($stmt->execute()) {
             $recipeAdded = true;
-            // Redirigir al usuario a index.php
             header('Location: ../index.php');
+            exit;
         } else {
-            echo "Error al añadir receta: " . $stmt->error;
+            $error = "Error al añadir receta: " . $stmt->error;
         }
     }
 }
 ?>
-
-
 
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -83,6 +72,11 @@ if ($conn) {
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center">Añadir receta</h2>
+                    <?php if ($error) : ?>
+                        <div class="alert alert-danger"><?php echo $error; ?></div>
+                    <?php elseif ($recipeAdded) : ?>
+                        <div class="alert alert-success">Receta añadida con éxito</div>
+                    <?php endif; ?>
                     <form action="añadir_receta.php" method="post" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="tipo">Tipo de receta</label>
@@ -103,7 +97,7 @@ if ($conn) {
                         </div>
                         <div class="form-group">
                             <label for="imagen">Imagen</label>
-                            <div id="dropzone" style="border: 2px dashed #aaa; padding: 10px; text-align: center;">Arrastra y suelta la imagen aquí o haz click para seleccionar el archivo</div>
+                            <div id="dropzone" class="dropzone">Haz click aquí para seleccionar una imagen</div>
                             <input type="file" name="imagen" id="imagen" class="form-control-file" style="display: none;">
                         </div>
                         <div class="form-group">
@@ -121,6 +115,7 @@ if ($conn) {
                             <label for="explicacion">Explicación</label>
                             <textarea name="explicacion" id="explicacion" class="form-control" placeholder="Explicación" required></textarea>
                         </div>
+
                         <button type="submit" class="btn btn-primary btn-block">Añadir receta</button>
                     </form>
                 </div>
@@ -128,6 +123,8 @@ if ($conn) {
         </div>
     </div>
 </div>
+
+<script src="../js/main.js"></script>
 <?php include '../inc/footer.php'; ?>
 </body>
 

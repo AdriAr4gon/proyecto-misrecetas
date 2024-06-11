@@ -32,6 +32,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Recetas</title>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
@@ -40,6 +41,9 @@ $result = $conn->query($sql);
 <body>
     <nav class="navbar navbar-expand-lg">
         <a class="navbar-brand" style="color: #0087F7;" href="../index.php">Mis Recetas</a>
+        <button class="navbar-toggler" type="button" id="navbarToggler">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item">
@@ -57,7 +61,7 @@ $result = $conn->query($sql);
                     <span class="navbar-text"><?php echo htmlspecialchars($_SESSION['username']); ?></span>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="views/logout.php">
+                    <a class="nav-link" href="logout.php">
                         <i class="fas fa-power-off"></i>
                     </a>
                 </li>

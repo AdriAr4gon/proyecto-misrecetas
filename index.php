@@ -8,35 +8,26 @@ if (!isset($_SESSION['loggedin'])) {
 }
 
 
-// Conexión a la base de datos
-$conexion = new mysqli('localhost', 'root', '', 'misrecetas');
+try {
+    $conexion = new PDO('mysql:host=localhost;dbname=misrecetas', 'root', '');
 
-// Consulta para obtener las recetas
-$resultado = $conexion->query("SELECT * FROM recetas");
+    // Consulta para obtener las recetas
+    $consulta = $conexion->query("SELECT * FROM recetas");
 
-// Almacenar las recetas en un array
-$recetas = $resultado->fetch_all(MYSQLI_ASSOC);
+    // Almacenar las recetas en un array
+    $recetas = $consulta->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a Mis Recetas</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="../css/style.css">
-</head>
 
 <body>
     <!-- Navbar -->
     <!-- ... -->
 
-    <!-- Jumbotron -->
-    <div class="jumbotron text-center">
+    <div class="jumbotron text-center" style="background-color: #f9f9f9; margin: 0;">
         <h1 class="display-4">¡Bienvenido a Mis Recetas!</h1>
         <p class="lead">Aquí encontrarás las mejores recetas para cocinar en casa.</p>
         <hr class="my-4">
@@ -46,11 +37,15 @@ $recetas = $resultado->fetch_all(MYSQLI_ASSOC);
 
     <!-- Imagen -->
     <div class="text-center">
-        <img src="img/index.png" class="rounded img-fluid w-50" alt="Imagen de recetas">
+        <a href="./views/misrecetas.php"><img src="img/index1.jpg" class="rounded img-fluid w-100" style="object-fit: cover; height: 370px;" alt="Imagen de recetas"></a>
     </div>
+    <footer style="background-color: #f8f9fa; padding: 0; margin-top: 0;">
+        <div class="container text-center margin: 0; padding: 0;">
+            <p style="margin-bottom: 0;">Web creada por Adrián Aragón</p>
+        </div>
+    </footer>
+    <script src="./js/script.js"></script>
 
-    <!-- Footer -->
-    <!-- ... -->
 </body>
 
 </html>

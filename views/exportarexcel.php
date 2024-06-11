@@ -5,19 +5,21 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 // Conexión a la base de datos
-$conn = new mysqli('localhost', 'root', '', 'misrecetas');
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+
+try {
+    $conn = new PDO('mysql:host=localhost;dbname=misrecetas', 'root', '');
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
 }
 
 // Verificar si se proporcionó un ID de receta
 if (isset($_GET["id"])) {
     $id = $_GET["id"];  // Obtener el ID de la receta de la URL
     $stmt = $conn->prepare("SELECT * FROM recetas WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    $stmt->bindParam(1, $id);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $filename = "receta_" . $id . ".xlsx";
 } else {
     $result = $conn->query("SELECT * FROM recetas ORDER BY nombre");
@@ -36,7 +38,7 @@ $sheet->setCellValue('E1', 'Explicación');
 
 // Añadir las recetas
 $row = 2;
-while ($receta = $result->fetch_assoc()) {
+while ($receta = $result->fetch(PDO::FETCH_ASSOC)) {
     $sheet->setCellValue('A' . $row, $receta['nombre']);
     $sheet->setCellValue('B' . $row, $receta['tipo']);
     $sheet->setCellValue('C' . $row, $receta['fecha_creacion']);

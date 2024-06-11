@@ -93,6 +93,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="card">
                 <div class="card-body">
                     <h2 class="card-title text-center">Editar receta</h2>
+                    <?php if ($error) : ?>
+                        <div class="alert alert-danger"><?php echo $error; ?></div>
+                    <?php elseif ($recipeUpdated) : ?>
+                        <div class="alert alert-success">Receta actualizada con éxito</div>
+                    <?php endif; ?>
                     <form action="editar_receta.php?id=<?php echo $id; ?>" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="id" value="<?php echo $id; ?>">
                         <div class="form-group">
@@ -116,11 +121,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         <div class="form-group">
                             <label for="imagen">Imagen</label>
-                            <div id="dropzone" style="border: 2px dashed #aaa; padding: 10px; text-align: center;">Arrastra y suelta la imagen aquí o haz click para seleccionar el archivo</div>
+                            <label for="imagen" id="dropzone" class="dropzone">Haz click aquí para seleccionar la imagen</label>
                             <input type="file" name="imagen" id="imagen" class="form-control-file" style="display: none;">
-                            <!-- Aquí puedes mostrar la imagen actual si la hay -->
-                            <?php if ($imagen) : ?>
-                                <img src="<?php echo $imagen; ?>" alt="Imagen de la receta" style="width: 100px; height: 100px;">
+                            <?php if ($imagen && file_exists($_SERVER['DOCUMENT_ROOT'] . "/uploads/" . $imagen)) : ?>
+                                <img src="/uploads/<?php echo $imagen; ?>" alt="Imagen de la receta" style="width: 100%; height: auto;">
                             <?php endif; ?>
                         </div>
                         <div class="form-group">
@@ -145,6 +149,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </div>
+
+<script src="../js/main.js"></script>
 <?php include '../inc/footer.php'; ?>
 </body>
 
