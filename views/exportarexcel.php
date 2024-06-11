@@ -4,6 +4,11 @@ require '../vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Conexión a la base de datos
 
 
@@ -38,7 +43,7 @@ $sheet->setCellValue('E1', 'Explicación');
 
 // Añadir las recetas
 $row = 2;
-while ($receta = $result->fetch(PDO::FETCH_ASSOC)) {
+foreach ($result as $receta) {
     $sheet->setCellValue('A' . $row, $receta['nombre']);
     $sheet->setCellValue('B' . $row, $receta['tipo']);
     $sheet->setCellValue('C' . $row, $receta['fecha_creacion']);
