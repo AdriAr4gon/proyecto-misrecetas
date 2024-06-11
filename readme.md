@@ -23,7 +23,7 @@ Este proyecto es una aplicación web para gestionar tus recetas de cocina.
 
 ## Instrucciones de instalación
 
-1. **Descarga el proyecto**: Puedes descargar el proyecto desde GitHub utilizando el botón "Code" y luego "Download ZIP". Descomprime el archivo ZIP en tu directorio local.
+1. **Descarga el proyecto**: Puedes descargar el proyecto desde GitHub utilizando el botón "Code" y luego "Download ZIP". Descomprime el archivo ZIP en tu directorio local y cambia de: proyecto-misrecetas-main a proyecto-misrecetas.
 
 2. **Mueve el proyecto a la carpeta htdocs de XAMPP**: Copia la carpeta del proyecto descomprimido a la carpeta `htdocs` de tu instalación de XAMPP. Por ejemplo, si has instalado XAMPP en `C:\xampp`, deberías copiar la carpeta del proyecto a `C:\xampp\htdocs`.
 
